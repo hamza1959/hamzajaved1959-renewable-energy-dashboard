@@ -81,7 +81,36 @@ fig4 = px.bar(
 )
 fig4.update_layout(template="plotly_white")
 st.plotly_chart(fig4, use_container_width=True)
+#  Chart 5 --- Moving Average Chart ---
+if show_moving_avg:
+    df_ma = df.copy()
+    df_ma[f"{selected_energy}_MA"] = df_ma[selected_energy].rolling(window=3).mean()
+    fig_ma = px.line(df_ma, x="Year", y=f"{selected_energy}_MA", markers=True,
+                     title=f"{selected_energy} - 3-Year Moving Average")
+    st.plotly_chart(fig_ma, use_container_width=True)
 
+df_pct = df.copy()
+for col in energy_sources:
+    df_pct[col] = ((df_pct[col] - df_pct[col].iloc[0]) / df_pct[col].iloc[0]) * 100
+
+st.subheader("📈 % Change in Energy Types Since First Year")
+fig_pct = px.line(df_pct, x="Year", y=energy_sources, markers=True,
+                  title="% Growth of Renewable Energy Sources Since Baseline Year")
+st.plotly_chart(fig_pct, use_container_width=True)
+
+# --- Visual 4: Area Chart - Share of Energy Types ---
+st.subheader("🧩 Share of Each Renewable Source Over Time")
+
+df_total = df.copy()
+df_total["Total"] = df_total[energy_sources].sum(axis=1)
+df_share = df_total.copy()
+for col in energy_sources:
+    df_share[col] = df_share[col] / df_share["Total"] * 100
+
+fig_area = px.area(df_share, x="Year", y=energy_sources,
+                   title="Relative Share of Each Energy Source Over Time (%)",
+                   groupnorm='percent', stackgroup='one')
+st.plotly_chart(fig_area, use_container_width=True)
 # Footer
 st.markdown("---")
 st.markdown("Developed by **Hamza Javed** | [LinkedIn](https://linkedin.com/)")
