@@ -94,9 +94,7 @@ fig5 = px.area(
     df_share,
     x="Year",
     y=energy_sources,
-    title="Relative Contribution of Each Renewable Source",
-    groupnorm='percent',
-    stackgroup='one',
+    title="Relative Contribution of Each Renewable Source (%)",
     labels={'value': 'Share (%)', 'variable': 'Energy Type'}
 )
 fig5.update_layout(template="plotly_white")
