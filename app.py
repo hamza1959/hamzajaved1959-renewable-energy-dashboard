@@ -21,18 +21,18 @@ year_range = st.sidebar.slider("Select Year Range", int(df['Year'].min()), int(d
 df = df[(df['Year'] >= year_range[0]) & (df['Year'] <= year_range[1])]
 
 # Energy Types
-energy_types = ['Fossil fuels', 'Hydropower', 'Solar energy', 'Wind energy', 'Bioenergy']
+energy_sources = ['Fossil fuels', 'Hydropower', 'Solar energy', 'Wind energy', 'Bioenergy']
 
 # --- Chart 1: Normalized Line Chart (for equal scale) ---
 st.subheader("📈 Normalized Trends Over Time")
-df_trend = df.groupby("Year")[energy_types].sum().reset_index()
+df_trend = df.groupby("Year")[energy_sources].sum().reset_index()
 df_normalized = df_trend.copy()
-df_normalized[energy_types] = df_normalized[energy_types].div(df_normalized[energy_types].max()) * 100
+df_normalized[energy_sources] = df_normalized[energy_sources].div(df_normalized[energy_sources].max()) * 100
 
 fig1 = px.line(
     df_normalized,
     x="Year",
-    y=energy_types,
+    y=energy_sources,
     title="Normalized Generation by Energy Type (100 = max)",
     labels={'value': 'Normalized %', 'variable': 'Energy Type'},
     markers=True
@@ -44,7 +44,7 @@ st.plotly_chart(fig1, use_container_width=True)
 st.subheader("🥧 Energy Share in a Year")
 selected_year = st.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
 df_year = df[df["Year"] == selected_year]
-df_pie = df_year[energy_types].sum().reset_index()
+df_pie = df_year[energy_sources].sum().reset_index()
 df_pie.columns = ['Energy Type', 'Generation']
 
 fig2 = px.pie(
@@ -61,7 +61,7 @@ st.subheader("📊 Stacked Area Chart Over Time")
 fig3 = px.area(
     df_trend,
     x='Year',
-    y=energy_types,
+    y=energy_sources,
     title='Electricity Generation by Energy Type (2000–2022)',
     labels={'value': 'Generation (GWh)', 'variable': 'Energy Type'}
 )
@@ -71,7 +71,7 @@ st.plotly_chart(fig3, use_container_width=True)
 # --- Chart 4: Bar Chart for Selected Year ---
 st.subheader("📊 Bar Chart of Generation in Selected Year")
 df_bar = df[df["Year"] == selected_year]
-total_by_tech = df_bar[energy_types].sum().sort_values(ascending=False)
+total_by_tech = df_bar[energy_sources].sum().sort_values(ascending=False)
 
 fig4 = px.bar(
     x=total_by_tech.index,
@@ -82,18 +82,18 @@ fig4 = px.bar(
 fig4.update_layout(template="plotly_white")
 st.plotly_chart(fig4, use_container_width=True)
 
-
+# --- Chart 5: Relative Share Over Time (Area Chart) ---
 st.subheader("🧩 Share of Each Energy Source Over Time (%)")
 df_total = df_trend.copy()
-df_total["Total"] = df_total[energy_types].sum(axis=1)
+df_total["Total"] = df_total[energy_sources].sum(axis=1)
 df_share = df_total.copy()
-for col in energy_types:
+for col in energy_sources:
     df_share[col] = df_share[col] / df_share["Total"] * 100
 
 fig5 = px.area(
     df_share,
     x="Year",
-    y=energy_types,
+    y=energy_sources,
     title="Relative Contribution of Each Renewable Source",
     groupnorm='percent',
     stackgroup='one',
@@ -105,3 +105,4 @@ st.plotly_chart(fig5, use_container_width=True)
 # Footer
 st.markdown("---")
 st.markdown("Developed by **Hamza Javed** | [LinkedIn](https://linkedin.com/)")
+
