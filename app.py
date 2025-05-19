@@ -82,10 +82,24 @@ fig4 = px.bar(
 fig4.update_layout(template="plotly_white")
 st.plotly_chart(fig4, use_container_width=True)
 
+
 st.subheader("🧩 Share of Each Energy Source Over Time (%)")
-fig5 = px.area( x="Year", y=energy_types,
-               title="Relative Contribution of Each Renewable Source",
-               groupnorm='percent', stackgroup='one')
+df_total = df_trend.copy()
+df_total["Total"] = df_total[energy_sources].sum(axis=1)
+df_share = df_total.copy()
+for col in energy_sources:
+    df_share[col] = df_share[col] / df_share["Total"] * 100
+
+fig5 = px.area(
+    df_share,
+    x="Year",
+    y=energy_sources,
+    title="Relative Contribution of Each Renewable Source",
+    groupnorm='percent',
+    stackgroup='one',
+    labels={'value': 'Share (%)', 'variable': 'Energy Type'}
+)
+fig5.update_layout(template="plotly_white")
 st.plotly_chart(fig5, use_container_width=True)
 
 # Footer
