@@ -81,17 +81,7 @@ fig4 = px.bar(
 )
 fig4.update_layout(template="plotly_white")
 st.plotly_chart(fig4, use_container_width=True)
-#  Chart 5 --- Moving Average Chart ---
-if show_moving_avg:
-    df_ma = df.copy()
-    df_ma[f"{selected_energy}_MA"] = df_ma[selected_energy].rolling(window=3).mean()
-    fig_ma = px.line(df_ma, x="Year", y=f"{selected_energy}_MA", markers=True,
-                     title=f"{selected_energy} - 3-Year Moving Average")
-    st.plotly_chart(fig_ma, use_container_width=True)
 
-df_pct = df.copy()
-for col in energy_sources:
-    df_pct[col] = ((df_pct[col] - df_pct[col].iloc[0]) / df_pct[col].iloc[0]) * 100
 
 st.subheader("📈 % Change in Energy Types Since First Year")
 fig_pct = px.line(df_pct, x="Year", y=energy_sources, markers=True,
