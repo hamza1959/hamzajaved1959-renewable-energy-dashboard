@@ -82,6 +82,12 @@ fig4 = px.bar(
 fig4.update_layout(template="plotly_white")
 st.plotly_chart(fig4, use_container_width=True)
 
+st.subheader("🧩 Share of Each Energy Source Over Time (%)")
+fig5 = px.area(df_share, x="Year", y=energy_types,
+               title="Relative Contribution of Each Renewable Source",
+               groupnorm='percent', stackgroup='one')
+st.plotly_chart(fig5, use_container_width=True)
+
 # Footer
 st.markdown("---")
 st.markdown("Developed by **Hamza Javed** | [LinkedIn](https://linkedin.com/)")
